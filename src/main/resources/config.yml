@@ -47,6 +47,19 @@ messages:
   preStart:
     inProgress: "&cLa partie est déjà en cours."
     go: "&aVous pouvez désormais choisir votre équipe ainsi que votre kit."
+  armsrush:
+    help: |
+      &c/armsrush addkit <name> <material_to_display>
+      &c/armsrush delkit <name>
+    addkit:
+      help: "&c/armsrush addkit <name> <material_to_display>"
+      materialInvalid: "&cL'ID du bloc est invalide."
+      alreadyExist: "&cUn kit existe déjà sous ce nom."
+      success: "&aKit crée."
+    delkit:
+      help: "&c/armsrush delkit <name>"
+      kitNotExist: "&cAucun kit sous ce nom."
+      kitDeleted: "&aLe kit a été supprimé."
   team:
     full: "&cCette équipe est complète."
     success: "&aVous avez rejoint l'équipe avec succès."

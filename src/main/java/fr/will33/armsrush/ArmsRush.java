@@ -1,12 +1,16 @@
 package fr.will33.armsrush;
 
+import fr.will33.armsrush.commands.ArmsRushCommand;
 import fr.will33.armsrush.commands.PreStartCommand;
 import fr.will33.armsrush.exception.ArmsRushConfigurationException;
 import fr.will33.armsrush.manager.ConfigurationManager;
 import fr.will33.armsrush.manager.GameManager;
 import fr.will33.armsrush.manager.ListenerManager;
 import fr.will33.guimodule.GuiModule;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class ArmsRush extends JavaPlugin {
 
@@ -19,8 +23,10 @@ public class ArmsRush extends JavaPlugin {
 
         this.gameManager = new GameManager();
         this.configurationManager = new ConfigurationManager();
+        this.saveResource("kits.yml", false);
         try {
             this.configurationManager.loadConfiguration(this.gameManager, this.getConfig());
+            this.configurationManager.loadKits(this.gameManager, YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "kits.yml")));
         } catch (ArmsRushConfigurationException e) {
             throw new RuntimeException(e);
         }
@@ -28,6 +34,7 @@ public class ArmsRush extends JavaPlugin {
         new GuiModule(this);
         new ListenerManager().registerListeners(this);
 
+        this.getCommand("armsrush").setExecutor(new ArmsRushCommand(this));
         this.getCommand("prestart").setExecutor(new PreStartCommand());
     }
 
