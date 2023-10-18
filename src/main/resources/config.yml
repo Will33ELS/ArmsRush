@@ -1,0 +1,53 @@
+arena:
+  world: "world"
+  arenaZone: "0,0,0:0,0,0"
+  portalZone: "0,0,0:0,0,0"
+  spawn:
+    WHITE: []
+  mobsSpawnLocation: []
+config:
+  gameDurationInSeconds: 600
+  maxPlayerInTeam: 2
+prestart:
+  teamItem:
+    material: DIAMOND_SWORD
+    displayname: "&bSelect team"
+    lore: []
+  kitsItem:
+    material: CHEST
+    displayname: "&bSelect kit"
+    lore: []
+gui:
+  team:
+    title: "Sélectionnez votre équipe"
+    playerFormat: "&3- &e{player}"
+    white:
+      displayname: "&fEquipe blanche"
+    gray:
+      displayname: "&8Equipe grise"
+    red:
+      displayname: "&4Equipe rouge"
+    orange:
+      displayname: "&6Equipe orange"
+    yellow:
+      displayname: "&eEquipe jaune"
+    green:
+      displayname: "&2Equipe verte"
+    cyan:
+      displayname: "&3Equipe cyan"
+    purple:
+      displayname: "&5Equipe violette"
+    random:
+      material: BARRIER
+      displayname: "&bSélection aléatoire"
+      lore: []
+messages:
+  config:
+    incompleteConfig: "L'arène n'est pas correctement configuré !"
+  preStart:
+    inProgress: "&cLa partie est déjà en cours."
+    go: "&aVous pouvez désormais choisir votre équipe ainsi que votre kit."
+  team:
+    full: "&cCette équipe est complète."
+    success: "&aVous avez rejoint l'équipe avec succès."
+    noTeamAvailable: "&cAucune équipe n'est disponible."

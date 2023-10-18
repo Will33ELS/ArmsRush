@@ -7,15 +7,22 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ArenaConfiguration {
 
     private Cuboid arena, portal;
-    private final List<Location> blueSpawn = new ArrayList<>(),
-            redSpawn = new ArrayList<>(),
-            mobSpawn = new ArrayList<>();
+    private final List<Location> mobSpawn = new ArrayList<>();
+    private final Map<TeamEnum, List<Location>> spawns = new HashMap<>();
     private Step step = Step.GLOBAL_ZONE;
+
+    public ArenaConfiguration() {
+        for(TeamEnum teamEnum : TeamEnum.values()){
+            this.spawns.put(teamEnum, new ArrayList<>());
+        }
+    }
 
     /**
      * Récupérer la zone de jeu configuré
@@ -50,19 +57,11 @@ public class ArenaConfiguration {
     }
 
     /**
-     * Récupérer les points de spawn de l'équipe bleue
+     * Récupérer le point de spawn de toutes les équipes
      * @return
      */
-    public List<Location> getBlueSpawn() {
-        return blueSpawn;
-    }
-
-    /**
-     * Récupérer les points de spawn de l'équipe rouge
-     * @return
-     */
-    public List<Location> getRedSpawn() {
-        return redSpawn;
+    public Map<TeamEnum, List<Location>> getSpawns(){
+        return this.spawns;
     }
 
     /**
@@ -94,25 +93,30 @@ public class ArenaConfiguration {
      * @throws ArenaConfigurationException
      */
     public void finish() throws ArenaConfigurationException {
-        if(this.arena == null || this.portal == null || this.blueSpawn.isEmpty() || this.redSpawn.isEmpty() || this.mobSpawn.isEmpty()){
+        if(this.arena == null || this.portal == null || this.mobSpawn.isEmpty()){
             throw new ArenaConfigurationException(ArmsRush.getInstance().getConfig().getString("messages.config.incompleteConfig"));
+        }
+        for(Map.Entry<TeamEnum, List<Location>> entry : this.spawns.entrySet()){
+            if(entry.getValue().isEmpty()){
+                throw new ArenaConfigurationException(ArmsRush.getInstance().getConfig().getString("messages.config.incompleteConfig"));
+            }
         }
         FileConfiguration config = ArmsRush.getInstance().getConfig();
         config.set("arena.world", this.getArena().pos1().getWorld().getName());
         config.set("arena.arenaZone", this.getArena().toString());
         config.set("arena.portalZone", this.getPortal().toString());
-        config.set("arena.blueSpawnLocation", this.getBlueSpawn().stream().map(LocationUtil::toString).toList());
-        config.set("arena.redSpawnLocation", this.getRedSpawn().stream().map(LocationUtil::toString).toList());
+        for(TeamEnum teamEnum : TeamEnum.values()){
+            config.set("arena.spawn." + teamEnum.name().toLowerCase(), this.getSpawns().get(teamEnum).stream().map(location -> LocationUtil.toString(location)).toList());
+        }
         config.set("arena.mobsSpawnLocation", this.getMobSpawn().stream().map(LocationUtil::toString).toList());
         ArmsRush.getInstance().saveConfig();
         Arena arena = new Arena(this.getArena(), this.getPortal());
-        arena.getBlueSpawn().addAll(this.getBlueSpawn());
-        arena.getRedSpawn().addAll(this.getRedSpawn());
+        arena.getSpawnLocations().putAll(this.spawns);
         arena.getMobSpawn().addAll(this.getMobSpawn());
         ArmsRush.getInstance().getGameManager().setArena(arena);
     }
 
     public static enum Step{
-        GLOBAL_ZONE, PORTAL_ZONE, BLUE_SPAWN_POINTS, RED_SPAWN_POINTS, MOBS_SPAWN_POINTS;
+        GLOBAL_ZONE, PORTAL_ZONE, WHITE_SPAWN_POINTS, GRAY_SPAWN_POINTS, RED_SPAWN_POINTS, ORANGE_SPAWN_POINTS, YELLOW_SPAWN_POINTS, GREEN_SPAWN_POINTS, CYAN_SPAWN_POINTS, PURPLE_SPAWN_POINTS, MOBS_SPAWN_POINTS;
     }
 }

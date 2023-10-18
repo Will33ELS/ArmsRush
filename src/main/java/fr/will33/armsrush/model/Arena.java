@@ -4,23 +4,28 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Arena {
 
     private final Cuboid arena, portal;
-    private final List<Location> blueSpawn = new ArrayList<>(),
-        redSpawn = new ArrayList<>(),
-        mobSpawn = new ArrayList<>();
-    private final List<Player> bluePlayers = new ArrayList<>(),
-        redPlayers = new ArrayList<>();
+    private final List<Location> mobSpawn = new ArrayList<>();
+    private final Map<TeamEnum, List<Location>> spawnLocations = new HashMap<>();
+    private final Map<TeamEnum, List<Player>> players = new HashMap<>();
     private Statut statut = Statut.LOBBY;
 
     public Arena(@NotNull Cuboid arena, @NotNull Cuboid portal) {
         this.arena = Preconditions.checkNotNull(arena);
         this.portal = Preconditions.checkNotNull(portal);
+        for(TeamEnum teamEnum : TeamEnum.values()){
+            this.spawnLocations.put(teamEnum, new ArrayList<>());
+            this.players.put(teamEnum, new ArrayList<>());
+        }
     }
 
     /**
@@ -32,19 +37,20 @@ public class Arena {
     }
 
     /**
-     * Récupérer les points de spawn de l'équipe bleue
+     * Récupérer les points de spawn d'une équipe
+     * @param teamEnum
      * @return
      */
-    public @NotNull List<Location> getBlueSpawn() {
-        return this.blueSpawn;
+    public List<Location> getSpawn(TeamEnum teamEnum){
+        return this.spawnLocations.get(teamEnum);
     }
 
     /**
-     * Récupérer les points de spawn de l'équipe rouge
+     * Récupérer tous les points de spawn
      * @return
      */
-    public @NotNull List<Location> getRedSpawn() {
-        return this.redSpawn;
+    public Map<TeamEnum, List<Location>> getSpawnLocations() {
+        return spawnLocations;
     }
 
     /**
@@ -56,19 +62,28 @@ public class Arena {
     }
 
     /**
-     * Récupérer la liste des joueurs dans l'équipe bleue
+     * Récupérer les joueurs dans une équipe
+     * @param teamEnum
      * @return
      */
-    public @NotNull List<Player> getBluePlayers() {
-        return this.bluePlayers;
+    public List<Player> getPlayersInTeam(TeamEnum teamEnum){
+        return this.players.get(teamEnum);
     }
 
     /**
-     * Récupérer la liste des joueurs dans l'équipe rouge
+     * Récupérer l'équipe d'un joueur
+     * @param player Instance du joueur
      * @return
      */
-    public @NotNull List<Player> getRedPlayers() {
-        return this.redPlayers;
+    public @Nullable TeamEnum getTeam(Player player){
+        TeamEnum teamEnum = null;
+        for(Map.Entry<TeamEnum, List<Player>> entry : this.players.entrySet()){
+            if(entry.getValue().contains(player)){
+                teamEnum = entry.getKey();
+                break;
+            }
+        }
+        return teamEnum;
     }
 
     /**

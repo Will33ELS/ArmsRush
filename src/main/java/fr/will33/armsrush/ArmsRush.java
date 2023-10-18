@@ -1,17 +1,42 @@
 package fr.will33.armsrush;
 
+import fr.will33.armsrush.commands.PreStartCommand;
+import fr.will33.armsrush.exception.ArmsRushConfigurationException;
+import fr.will33.armsrush.manager.ConfigurationManager;
 import fr.will33.armsrush.manager.GameManager;
+import fr.will33.armsrush.manager.ListenerManager;
+import fr.will33.guimodule.GuiModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ArmsRush extends JavaPlugin {
 
     private GameManager gameManager;
+    private ConfigurationManager configurationManager;
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
 
+        this.gameManager = new GameManager();
+        this.configurationManager = new ConfigurationManager();
+        try {
+            this.configurationManager.loadConfiguration(this.gameManager, this.getConfig());
+        } catch (ArmsRushConfigurationException e) {
+            throw new RuntimeException(e);
+        }
 
+        new GuiModule(this);
+        new ListenerManager().registerListeners(this);
+
+        this.getCommand("prestart").setExecutor(new PreStartCommand());
+    }
+
+    /**
+     * Récupérer la gestion de la configuration
+     * @return
+     */
+    public ConfigurationManager getConfigurationManager() {
+        return configurationManager;
     }
 
     /**

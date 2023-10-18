@@ -13,6 +13,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.30</lombok.version>
+        <locationutilmodule.version>1.0</locationutilmodule.version>
+        <guimodule.version>1.0</guimodule.version>
     </properties>
 
     <repositories>
@@ -41,7 +43,14 @@
         <dependency>
             <groupId>fr.will33</groupId>
             <artifactId>LocationUtilModule</artifactId>
-            <version>1.0</version>
+            <version>${locationutilmodule.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.will33</groupId>
+            <artifactId>GuiModule</artifactId>
+            <version>${guimodule.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
