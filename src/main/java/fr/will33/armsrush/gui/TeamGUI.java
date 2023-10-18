@@ -65,7 +65,7 @@ public class TeamGUI extends AbstractGUI {
                 Optional.ofNullable(playerTeam).ifPresent(t -> this.instance.getGameManager().getArena().getPlayersInTeam(t).remove(player));
                 this.instance.getGameManager().getArena().getPlayersInTeam(teamEnum).add(player);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.team.success")));
-                this.refreshAllGUI();
+                refreshAllGUI();
             }
         } else {
             TeamEnum teamEnum = TeamEnum.valueOf(action);
@@ -76,12 +76,12 @@ public class TeamGUI extends AbstractGUI {
                 Optional.ofNullable(playerTeam).ifPresent(t -> this.instance.getGameManager().getArena().getPlayersInTeam(t).remove(player));
                 this.instance.getGameManager().getArena().getPlayersInTeam(teamEnum).add(player);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.team.success")));
-                this.refreshAllGUI();
+                refreshAllGUI();
             }
         }
     }
 
-    private void refreshAllGUI(){
+    public static void refreshAllGUI(){
         for(Map.Entry<Player, AbstractGUI> guis : GuiModule.getGuiModule().getGuiManager().getGuis().entrySet()){
             if(guis.getValue() instanceof TeamGUI){
                 guis.getValue().onUpdate(guis.getKey());

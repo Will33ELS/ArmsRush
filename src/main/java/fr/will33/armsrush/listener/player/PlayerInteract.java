@@ -3,6 +3,7 @@ package fr.will33.armsrush.listener.player;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.exception.ArmsRushConfigurationException;
+import fr.will33.armsrush.gui.KitsGUI;
 import fr.will33.armsrush.gui.TeamGUI;
 import fr.will33.guimodule.GuiModule;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class PlayerInteract implements Listener {
 
@@ -36,7 +36,7 @@ public class PlayerInteract implements Listener {
                     }
                 } else if(item.isSimilar(this.instance.getConfigurationManager().getKitsItemStack())){
                     event.setCancelled(true);
-                    //TODO OPEN GUI
+                    GuiModule.getGuiModule().getGuiManager().openInventory(event.getPlayer(), new KitsGUI(this.instance));
                 }
             });
         }
