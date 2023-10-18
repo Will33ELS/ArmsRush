@@ -1,0 +1,6 @@
+main: fr.will33.armsrush.ArmsRush
+name: ArmsRush
+version: ${project.version}
+api-version: "1.20"
+author: William AVENTIN
+website: "https://www.elesia.org"
