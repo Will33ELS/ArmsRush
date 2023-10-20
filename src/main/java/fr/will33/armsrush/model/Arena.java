@@ -73,6 +73,18 @@ public class Arena {
     }
 
     /**
+     * Récupérer tous les joueurs dans la partie
+     * @return
+     */
+    public List<Player> getPlayersInGame(){
+        List<Player> players = new ArrayList<>();
+        for(List<Player> pls : this.players.values()){
+            players.addAll(pls);
+        }
+        return players;
+    }
+
+    /**
      * Récupérer l'équipe d'un joueur
      * @param player Instance du joueur
      * @return

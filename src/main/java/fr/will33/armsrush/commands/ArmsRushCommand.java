@@ -2,6 +2,8 @@ package fr.will33.armsrush.commands;
 
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
+import fr.will33.armsrush.exception.ArmsRushGameException;
+import fr.will33.armsrush.model.Arena;
 import fr.will33.armsrush.model.Kit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -69,6 +71,24 @@ public class ArmsRushCommand implements CommandExecutor {
                                 err.printStackTrace();
                             }
                         }
+                    }
+                } else if(strings[0].equalsIgnoreCase("start")){
+                    if(this.instance.getGameManager().getArena().getStatut() != Arena.Statut.LOBBY){
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.start.inProgress")));
+                    } else {
+                        try {
+                            this.instance.getGameManager().startLobby();
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.start.success")));
+                        } catch (ArmsRushGameException e) {
+                            player.sendMessage("§c" + e.getMessage());
+                        }
+                    }
+                } else if(strings[0].equalsIgnoreCase("stop")){
+                    if(this.instance.getGameManager().getArena().getStatut() == Arena.Statut.LOBBY) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.stop.noInProgress")));
+                    } else {
+                        this.instance.getGameManager().stopGame();
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.stop.success")));
                     }
                 }
             }

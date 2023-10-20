@@ -5,9 +5,7 @@ import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.listener.entity.EntityDamageByEntity;
 import fr.will33.armsrush.listener.entity.EntityPickupItem;
 import fr.will33.armsrush.listener.inventory.InventoryClick;
-import fr.will33.armsrush.listener.player.PlayerDrop;
-import fr.will33.armsrush.listener.player.PlayerInteract;
-import fr.will33.armsrush.listener.player.PlayerQuit;
+import fr.will33.armsrush.listener.player.*;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +26,10 @@ public class ListenerManager {
         pluginManager.registerEvents(new InventoryClick(instance), instance);
 
         //PLAYER
+        pluginManager.registerEvents(new PlayerDeath(instance), instance);
         pluginManager.registerEvents(new PlayerDrop(instance), instance);
         pluginManager.registerEvents(new PlayerInteract(instance), instance);
+        pluginManager.registerEvents(new PlayerMove(instance), instance);
         pluginManager.registerEvents(new PlayerQuit(instance), instance);
     }
 

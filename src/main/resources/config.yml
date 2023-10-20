@@ -20,6 +20,8 @@ prestart:
 butin:
   material: NETHER_STAR
   display: "&3{butin}"
+bossBar:
+  display: "&6Temps restant: §e{timer}"
 gui:
   team:
     title: "Sélectionnez votre équipe"
@@ -89,10 +91,18 @@ messages:
   preStart:
     inProgress: "&cLa partie est déjà en cours."
     go: "&aVous pouvez désormais choisir votre équipe ainsi que votre kit."
+  start:
+    inProgress: "&cLa partie est déjà en cours."
+    success: "&aLancement de la partie."
+  stop:
+    noInProgress: "&cLa partie n'est pas en cours."
+    success: "&cPartie arrêté"
   armsrush:
     help: |
       &c/armsrush addkit <name> <material_to_display>
       &c/armsrush delkit <name>
+      &c/armsrush start
+      &c/armsrush stop
     addkit:
       help: "&c/armsrush addkit <name> <material_to_display>"
       materialInvalid: "&cL'ID du bloc est invalide."
@@ -110,3 +120,6 @@ messages:
     select: "&aVous avez sélectionné le kit &b{kit}"
   kill:
     broadcast: "&e{killer} &7a tué &b{victim}"
+  lobby:
+    startIn: "&6Lancement de la partie dans §b{seconds} secondes"
+    start: "&aQue la partie commence !"
