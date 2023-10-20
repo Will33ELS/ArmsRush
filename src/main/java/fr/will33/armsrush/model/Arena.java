@@ -18,6 +18,7 @@ public class Arena {
     private final Map<TeamEnum, List<Location>> spawnLocations = new HashMap<>();
     private final Map<TeamEnum, List<Player>> players = new HashMap<>();
     private final Map<Player, Kit> playerKit = new HashMap<>();
+    private final Map<Player, Integer> playersButin = new HashMap<>();
     private Statut statut = Statut.LOBBY;
 
     public Arena(@NotNull Cuboid arena, @NotNull Cuboid portal) {
@@ -96,6 +97,14 @@ public class Arena {
     }
 
     /**
+     * Récupérer le butin des joueurs
+     * @return
+     */
+    public Map<Player, Integer> getPlayersButin() {
+        return playersButin;
+    }
+
+    /**
      * Récupérer le statut de l'arène
      * @return
      */
@@ -112,6 +121,6 @@ public class Arena {
     }
 
     public static enum Statut {
-        LOBBY, INGAME;
+        LOBBY, LAUNCH, INGAME;
     }
 }

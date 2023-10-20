@@ -28,6 +28,7 @@ public class ConfigurationManager {
     private int gameDuration, maxPlayerInTeam;
     private ArenaConfiguration arenaConfiguration;
     private ItemStack teamItemStack, kitsItemStack;
+    private Material butinMaterial;
     private FileConfiguration kitConfiguration;
 
     /**
@@ -54,6 +55,12 @@ public class ConfigurationManager {
         if(this.maxPlayerInTeam <= 0) throw new ArmsRushConfigurationException("Le nombre maximum de joueur par équipe doit être supérieur à 0 !");
         this.teamItemStack = this.loadItems(configuration.getString("prestart.teamItem.material"), configuration.getString("prestart.teamItem.displayname"), configuration.getStringList("prestart.teamItem.lore"));
         this.kitsItemStack = this.loadItems(configuration.getString("prestart.kitsItem.material"), configuration.getString("prestart.kitsItem.displayname"), configuration.getStringList("prestart.kitsItem.lore"));
+
+        try{
+            this.butinMaterial = Material.valueOf(configuration.getString("butin.material"));
+        } catch (IllegalArgumentException err){
+            throw new ArmsRushConfigurationException("This material (" + configuration.getString("butin.material") + ") does not exist 'butin.material'. Please check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
+        }
     }
 
     /**
@@ -131,6 +138,14 @@ public class ConfigurationManager {
             throw new ArmsRushConfigurationException("This material (" + material + ") does not exist. Please check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html");
         }
         return new ItemBuilder(mat, 1, ChatColor.translateAlternateColorCodes('&', displayName), lore.stream().map(l -> ChatColor.translateAlternateColorCodes('&', l)).toList()).toItemStack();
+    }
+
+    /**
+     * Récupérer le material du butin
+     * @return
+     */
+    public Material getButinMaterial() {
+        return butinMaterial;
     }
 
     /**

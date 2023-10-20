@@ -17,6 +17,9 @@ prestart:
     material: CHEST
     displayname: "&bSelect kit"
     lore: []
+butin:
+  material: NETHER_STAR
+  display: "&3{butin}"
 gui:
   team:
     title: "Sélectionnez votre équipe"
@@ -73,3 +76,5 @@ messages:
     noTeamAvailable: "&cAucune équipe n'est disponible."
   kits:
     select: "&aVous avez sélectionné le kit &b{kit}"
+  kill:
+    broadcast: "&e{killer} &7a tué &b{victim}"
