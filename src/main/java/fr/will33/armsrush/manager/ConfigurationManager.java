@@ -27,6 +27,7 @@ public class ConfigurationManager {
     private Player ownerConfig;
     private int gameDuration, maxPlayerInTeam;
     private ArenaConfiguration arenaConfiguration;
+    private ZoneConfiguration zoneConfiguration;
     private ItemStack teamItemStack, kitsItemStack;
     private Material butinMaterial;
     private FileConfiguration kitConfiguration;
@@ -157,11 +158,27 @@ public class ConfigurationManager {
     }
 
     /**
+     * Définir le joueur qui configure l'arène
+     * @param ownerConfig
+     */
+    public void setOwnerConfig(@Nullable Player ownerConfig) {
+        this.ownerConfig = ownerConfig;
+    }
+
+    /**
      * Récupérer la configuration en cours de l'arène
      * @return
      */
     public @Nullable ArenaConfiguration getArenaConfiguration() {
         return arenaConfiguration;
+    }
+
+    /**
+     * Définir la configuration de l'arène
+     * @param arenaConfiguration
+     */
+    public void setArenaConfiguration(@Nullable ArenaConfiguration arenaConfiguration) {
+        this.arenaConfiguration = arenaConfiguration;
     }
 
     /**
@@ -194,5 +211,21 @@ public class ConfigurationManager {
      */
     public ItemStack getKitsItemStack() {
         return kitsItemStack;
+    }
+
+    /**
+     * Recover zone configuration instance
+     * @return
+     */
+    public @Nullable ZoneConfiguration getZoneConfiguration() {
+        return zoneConfiguration;
+    }
+
+    /**
+     * Define zone configuration instance
+     * @param zoneConfiguration Instance of the zone configuration
+     */
+    public void setZoneConfiguration(@Nullable ZoneConfiguration zoneConfiguration) {
+        this.zoneConfiguration = zoneConfiguration;
     }
 }

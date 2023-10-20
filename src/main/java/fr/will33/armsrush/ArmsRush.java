@@ -1,6 +1,7 @@
 package fr.will33.armsrush;
 
 import fr.will33.armsrush.commands.ArmsRushCommand;
+import fr.will33.armsrush.commands.ConfigurationCommand;
 import fr.will33.armsrush.commands.PreStartCommand;
 import fr.will33.armsrush.exception.ArmsRushConfigurationException;
 import fr.will33.armsrush.manager.ConfigurationManager;
@@ -35,6 +36,7 @@ public class ArmsRush extends JavaPlugin {
         new ListenerManager().registerListeners(this);
 
         this.getCommand("armsrush").setExecutor(new ArmsRushCommand(this));
+        this.getCommand("configuration").setExecutor(new ConfigurationCommand(this));
         this.getCommand("prestart").setExecutor(new PreStartCommand());
     }
 

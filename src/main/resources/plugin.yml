@@ -7,5 +7,7 @@ website: "https://www.elesia.org"
 commands:
   armsrush:
     description: "Commande administrative"
+  configuration:
+    description: "Configurer l'arène"
   prestart:
     description: "Se préparer pour le début de la partie"
