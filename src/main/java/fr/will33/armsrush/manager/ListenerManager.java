@@ -29,8 +29,10 @@ public class ListenerManager {
         pluginManager.registerEvents(new PlayerDeath(instance), instance);
         pluginManager.registerEvents(new PlayerDrop(instance), instance);
         pluginManager.registerEvents(new PlayerInteract(instance), instance);
+        pluginManager.registerEvents(new PlayerJoin(instance), instance);
         pluginManager.registerEvents(new PlayerMove(instance), instance);
         pluginManager.registerEvents(new PlayerQuit(instance), instance);
+        pluginManager.registerEvents(new PlayerRespawn(instance), instance);
     }
 
 }

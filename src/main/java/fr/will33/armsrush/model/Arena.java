@@ -1,6 +1,7 @@
 package fr.will33.armsrush.model;
 
 import com.google.common.base.Preconditions;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +18,9 @@ public class Arena {
     private final List<Location> mobSpawn = new ArrayList<>();
     private final Map<TeamEnum, List<Location>> spawnLocations = new HashMap<>();
     private final Map<TeamEnum, List<Player>> players = new HashMap<>();
-    private final Map<Player, Kit> playerKit = new HashMap<>();
-    private final Map<Player, Integer> playersButin = new HashMap<>();
+    private final Map<Player, APlayer> aPlayers = new HashMap<>();
     private Statut statut = Statut.LOBBY;
+    private boolean portalIsOpen = false;
 
     public Arena(@NotNull Cuboid arena, @NotNull Cuboid portal) {
         this.arena = Preconditions.checkNotNull(arena);
@@ -31,11 +32,19 @@ public class Arena {
     }
 
     /**
-     * Récupérer la zone de jeu
+     * Retrieve arena cuboid
      * @return
      */
     public @NotNull Cuboid getArena() {
         return this.arena;
+    }
+
+    /**
+     * Retrieve portal cuboid
+     * @return
+     */
+    public @NotNull Cuboid getPortal() {
+        return portal;
     }
 
     /**
@@ -101,19 +110,39 @@ public class Arena {
     }
 
     /**
-     * Récupérer le kit des joueurs
+     * Retrieve players in game
      * @return
      */
-    public Map<Player, Kit> getPlayerKit() {
-        return playerKit;
+    public Map<Player, APlayer> getAPlayers() {
+        return aPlayers;
     }
 
     /**
-     * Récupérer le butin des joueurs
+     * Retrieve players count alive
      * @return
      */
-    public Map<Player, Integer> getPlayersButin() {
-        return playersButin;
+    public long getPlayerAlive(){
+        long count = 0;
+        for(List<Player> pls : this.players.values()){
+            count += pls.stream().filter(p -> p.getGameMode() != GameMode.SPECTATOR).count();
+        }
+        return count;
+    }
+
+    /**
+     * Check if portal is open
+     * @return
+     */
+    public boolean isPortalIsOpen() {
+        return portalIsOpen;
+    }
+
+    /**
+     * Define if portal is open
+     * @param portalIsOpen Portal is open
+     */
+    public void setPortalIsOpen(boolean portalIsOpen) {
+        this.portalIsOpen = portalIsOpen;
     }
 
     /**

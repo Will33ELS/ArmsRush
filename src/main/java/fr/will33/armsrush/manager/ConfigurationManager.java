@@ -25,7 +25,7 @@ import java.util.List;
 public class ConfigurationManager {
 
     private Player ownerConfig;
-    private int gameDuration, maxPlayerInTeam;
+    private int gameDuration, maxPlayerInTeam, portalOpenTime;
     private ArenaConfiguration arenaConfiguration;
     private ZoneConfiguration zoneConfiguration;
     private ItemStack teamItemStack, kitsItemStack;
@@ -56,7 +56,9 @@ public class ConfigurationManager {
         if(this.maxPlayerInTeam <= 0) throw new ArmsRushConfigurationException("Le nombre maximum de joueur par équipe doit être supérieur à 0 !");
         this.teamItemStack = this.loadItems(configuration.getString("prestart.teamItem.material"), configuration.getString("prestart.teamItem.displayname"), configuration.getStringList("prestart.teamItem.lore"));
         this.kitsItemStack = this.loadItems(configuration.getString("prestart.kitsItem.material"), configuration.getString("prestart.kitsItem.displayname"), configuration.getStringList("prestart.kitsItem.lore"));
-
+        this.portalOpenTime = configuration.getInt("config.portalOpenTime");
+        if(this.portalOpenTime <= 0) throw new ArmsRushConfigurationException("La durée avant l'ouverture du portail doit être supérieur à 0!");
+        if(this.portalOpenTime > this.gameDuration) throw new ArmsRushConfigurationException("La durée avant l'ouverture du portail ne peut pas être supérieur à la durée de la partie !");
         try{
             this.butinMaterial = Material.valueOf(configuration.getString("butin.material"));
         } catch (IllegalArgumentException err){
@@ -195,6 +197,14 @@ public class ConfigurationManager {
      */
     public int getMaxPlayerInTeam() {
         return maxPlayerInTeam;
+    }
+
+    /**
+     * Récupérer la durée avant l'ouverture du portail
+     * @return
+     */
+    public int getPortalOpenTime() {
+        return portalOpenTime;
     }
 
     /**

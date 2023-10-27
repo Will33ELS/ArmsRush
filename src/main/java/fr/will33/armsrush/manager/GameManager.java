@@ -3,10 +3,14 @@ package fr.will33.armsrush.manager;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.exception.ArmsRushGameException;
+import fr.will33.armsrush.model.APlayer;
 import fr.will33.armsrush.model.Arena;
 import fr.will33.armsrush.model.Kit;
 import fr.will33.armsrush.model.TeamEnum;
+import fr.will33.armsrush.task.ArmsScoreboard;
+import fr.will33.armsrush.task.GameTask;
 import fr.will33.armsrush.task.LobbyTask;
+import fr.will33.armsrush.utils.MapUtil;
 import fr.will33.armsrush.utils.TimerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,14 +19,14 @@ import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class GameManager {
 
@@ -30,6 +34,7 @@ public class GameManager {
     private BossBar bossBar;
     private final List<Kit> kits = new ArrayList<>();
     private LobbyTask lobbyTask;
+    private GameTask gameTask;
 
     /**
      * Récupérer l'arène de jeu
@@ -101,52 +106,107 @@ public class GameManager {
         this.getArena().setStatut(Arena.Statut.INGAME);
 
         this.bossBar = Bukkit.createBossBar(
-                ChatColor.translateAlternateColorCodes('&', ArmsRush.getInstance().getConfig().getString("bossBar").replace("{timer}", TimerUtil.format(ArmsRush.getInstance().getConfigurationManager().getGameDuration()))),
+                ChatColor.translateAlternateColorCodes('&', ArmsRush.getInstance().getConfig().getString("bossBar.display").replace("{timer}", TimerUtil.format(ArmsRush.getInstance().getConfigurationManager().getGameDuration()))),
                 BarColor.WHITE,
                 BarStyle.SOLID
         );
 
         for(TeamEnum teamEnum : TeamEnum.values()){
             this.getArena().getPlayersInTeam(teamEnum).forEach(pls -> {
-                if(this.getArena().getPlayerKit().containsKey(pls)){
-                    this.getArena().getPlayerKit().get(pls).giveKit(pls);
+                APlayer aPlayer = this.getArena().getAPlayers().get(pls);
+                if(aPlayer.getKit() != null){
+                    aPlayer.getKit().giveKit(pls);
                 }
-                this.getArena().getPlayersButin().put(pls, 0);
                 this.bossBar.addPlayer(pls);
+
+                Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                ArmsScoreboard armsScoreboard = new ArmsScoreboard(scoreboard);
+                armsScoreboard.create(ChatColor.translateAlternateColorCodes('&', ArmsRush.getInstance().getConfig().getString("scoreboard.title")));
+                aPlayer.setArmsScoreboard(armsScoreboard);
+                pls.setScoreboard(scoreboard);
             });
         }
+
+        this.gameTask = new GameTask(ArmsRush.getInstance());
+        this.gameTask.runTaskTimer(ArmsRush.getInstance(), 20, 20);
     }
 
     public void stopGame(){
+        if(this.getArena().getStatut() == Arena.Statut.LOBBY) return;
         if(this.lobbyTask != null){
             this.lobbyTask.cancel();
             this.lobbyTask = null;
         }
+        if(this.gameTask != null){
+            this.gameTask.cancel();
+            this.gameTask = null;
+        }
+
         this.bossBar.removeAll();
         this.bossBar = null;
+        this.getArena().setPortalIsOpen(false);
+
+        for(APlayer aPlayer : this.getArena().getAPlayers().values()){
+            if(aPlayer.getPlayer().getGameMode() != GameMode.SPECTATOR){
+                aPlayer.setButin((int) (aPlayer.getButin() * 0.75));
+            }
+        }
+
+        List<APlayer> top = new ArrayList<>(this.getArena().getAPlayers().values());
+        Map<TeamEnum, Integer> points = new HashMap<>();
+        for(APlayer aPlayer : top){
+            TeamEnum teamEnum = this.getArena().getTeam(aPlayer.getPlayer());
+            int point = points.getOrDefault(teamEnum, 0);
+            point += aPlayer.getButin();
+            points.put(teamEnum, point);
+        }
+        points = MapUtil.sortByValue(points);
+
+        this.getArena().getPlayersInGame().forEach(pls -> pls.sendMessage(ChatColor.translateAlternateColorCodes('&', ArmsRush.getInstance().getConfig().getString("messages.top.head"))));
+        int index = 1;
+        for(Map.Entry<TeamEnum, Integer> teamTop : points.entrySet()){
+            if(index > 5) break;
+            this.getArena().getPlayersInGame().forEach(pls -> pls.sendMessage(ChatColor.translateAlternateColorCodes('&', ArmsRush.getInstance().getConfig().getString("messages.top.body").replace("{team_color}", "&" + teamTop.getKey().getColor().getChar()).replace("{team}", ArmsRush.getInstance().getConfig().getString("messages.team." + teamTop.getKey().name().toLowerCase())).replace("{butin}", String.valueOf(teamTop.getValue())))));
+            index ++;
+        }
 
         for(TeamEnum teamEnum : TeamEnum.values()){
             this.getArena().getPlayersInTeam(teamEnum).forEach(pls -> {
+                APlayer aPlayer = this.getArena().getAPlayers().get(pls);
                 pls.getInventory().clear();
                 pls.getInventory().setArmorContents(null);
-                pls.setGameMode(GameMode.SPECTATOR);
+                pls.setGameMode(GameMode.SURVIVAL);
+                aPlayer.getArmsScoreboard().remove();
+                aPlayer.setArmsScoreboard(null);
             });
             this.getArena().getPlayersInTeam(teamEnum).clear();
         }
-        this.getArena().getPlayersButin().clear();
-        this.getArena().getPlayerKit().clear();
+        this.getArena().getArena().getWorld().getEntities().stream().filter(entity -> entity instanceof Item item && this.getArena().getArena().isIn(item.getLocation())).forEach(Entity::remove);
 
-
+        this.getArena().getAPlayers().clear();
+        this.getArena().setStatut(Arena.Statut.LOBBY);
     }
 
     /**
-     * Récupérer la task de lancement
+     * Retrieve lobby task
      * @return
      */
     public LobbyTask getLobbyTask() {
         return lobbyTask;
     }
 
+    /**
+     * Retrieve game task
+     * @return
+     */
+    public GameTask getGameTask() {
+        return gameTask;
+    }
+
+    /**
+     * Retrieve the bossbar instance
+     * @return
+     */
     public @Nullable BossBar getBossBar() {
         return bossBar;
     }

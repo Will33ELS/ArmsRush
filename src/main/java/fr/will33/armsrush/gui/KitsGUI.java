@@ -2,6 +2,7 @@ package fr.will33.armsrush.gui;
 
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
+import fr.will33.armsrush.model.APlayer;
 import fr.will33.armsrush.model.Kit;
 import fr.will33.armsrush.utils.ItemBuilder;
 import fr.will33.guimodule.gui.AbstractGUI;
@@ -52,7 +53,11 @@ public class KitsGUI extends AbstractGUI {
     @Override
     public void onClick(Player player, ItemStack itemStack, String action, ClickType clickType) {
         Optional.ofNullable(this.instance.getGameManager().getKit(action)).ifPresent(kit -> {
-            this.instance.getGameManager().getArena().getPlayerKit().put(player, kit);
+            if(!this.instance.getGameManager().getArena().getAPlayers().containsKey(player)){
+                this.instance.getGameManager().getArena().getAPlayers().put(player, new APlayer(player));
+            }
+            APlayer aPlayer = this.instance.getGameManager().getArena().getAPlayers().get(player);
+            aPlayer.setKit(kit);
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.kits.select").replace("{kit}", kit.name())));
         });
     }

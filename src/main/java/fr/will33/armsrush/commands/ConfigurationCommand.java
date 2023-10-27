@@ -48,7 +48,7 @@ public class ConfigurationCommand implements CommandExecutor {
                             configurationManager.setZoneConfiguration(new ZoneConfiguration((confirmBlue) -> {
                                 configurationManager.getArenaConfiguration().setPortal(confirmBlue);
                                 configurationManager.getArenaConfiguration().setStep(ArenaConfiguration.Step.WHITE_SPAWN_POINTS);
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', configuration.getString("messages.config.hoeRedCuboid")));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', configuration.getString("messages.config.addWhiteSpawnPoint")));
                             }));
                         }));
                     }

@@ -12,7 +12,15 @@ public record Cuboid(Location pos1, Location pos2) {
         Preconditions.checkNotNull(pos2);
         Preconditions.checkArgument(pos1.getWorld().equals(pos2.getWorld()), "La position 1 et 2 doivent être dans le même monde !");
         this.pos1 = new Location(pos1.getWorld(), Math.min(pos1.getBlockX(), pos2.getBlockX()), Math.min(pos1.getBlockY(), pos2.getBlockY()), Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
-        this.pos2 = new Location(pos1.getWorld(), Math.max(pos1.getBlockX(), pos2.getBlockX()), Math.max(pos1.getBlockY(), pos2.getBlockY()), Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
+        this.pos2 = new Location(pos1.getWorld(), Math.max(pos1.getBlockX(), pos2.getBlockX()) + 1, Math.max(pos1.getBlockY(), pos2.getBlockY()) + 1, Math.max(pos1.getBlockZ(), pos2.getBlockZ()) + 1);
+    }
+
+    /**
+     * Retrieve world instance
+     * @return
+     */
+    public @NotNull World getWorld(){
+        return this.pos1.getWorld();
     }
 
     /**
@@ -44,6 +52,6 @@ public record Cuboid(Location pos1, Location pos2) {
         String[] pos = value.split(":");
         String[] pos1 = pos[0].split(",");
         String[] pos2 = pos[1].split(",");
-        return new Cuboid(new Location(world, Integer.parseInt(pos1[0]), Integer.parseInt(pos1[1]), Integer.parseInt(pos1[2])), new Location(world, Integer.parseInt(pos2[0]), Integer.parseInt(pos2[1]), Integer.parseInt(pos2[2])));
+        return new Cuboid(new Location(world, Double.parseDouble(pos1[0]), Double.parseDouble(pos1[1]), Double.parseDouble(pos1[2])), new Location(world, Double.parseDouble(pos2[0]), Double.parseDouble(pos2[1]), Double.parseDouble(pos2[2])));
     }
 }

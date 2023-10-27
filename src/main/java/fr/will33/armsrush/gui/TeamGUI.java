@@ -3,6 +3,7 @@ package fr.will33.armsrush.gui;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.exception.ArmsRushConfigurationException;
+import fr.will33.armsrush.model.APlayer;
 import fr.will33.armsrush.model.TeamEnum;
 import fr.will33.armsrush.utils.ItemBuilder;
 import fr.will33.guimodule.GuiModule;
@@ -50,6 +51,9 @@ public class TeamGUI extends AbstractGUI {
 
     @Override
     public void onClick(Player player, ItemStack itemStack, String action, ClickType clickType) {
+        if(!this.instance.getGameManager().getArena().getAPlayers().containsKey(player)){
+            this.instance.getGameManager().getArena().getAPlayers().put(player, new APlayer(player));
+        }
         if("random".equals(action)){
             List<TeamEnum> available = new ArrayList<>();
             for(TeamEnum teamEnum : TeamEnum.values()){

@@ -24,7 +24,9 @@ public class ArmsRush extends JavaPlugin {
 
         this.gameManager = new GameManager();
         this.configurationManager = new ConfigurationManager();
-        this.saveResource("kits.yml", false);
+        if(!new File(this.getDataFolder(), "kits.yml").exists()) {
+            this.saveResource("kits.yml", false);
+        }
         try {
             this.configurationManager.loadConfiguration(this.gameManager, this.getConfig());
             this.configurationManager.loadKits(this.gameManager, YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "kits.yml")));
@@ -38,6 +40,11 @@ public class ArmsRush extends JavaPlugin {
         this.getCommand("armsrush").setExecutor(new ArmsRushCommand(this));
         this.getCommand("configuration").setExecutor(new ConfigurationCommand(this));
         this.getCommand("prestart").setExecutor(new PreStartCommand());
+    }
+
+    @Override
+    public void onDisable() {
+        this.getGameManager().stopGame();
     }
 
     /**

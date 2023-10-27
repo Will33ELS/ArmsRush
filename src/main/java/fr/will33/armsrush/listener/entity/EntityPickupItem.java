@@ -2,6 +2,7 @@ package fr.will33.armsrush.listener.entity;
 
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
+import fr.will33.armsrush.model.APlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -25,17 +26,21 @@ public class EntityPickupItem implements Listener {
         if(item.hasMetadata("butin") && !(entity instanceof Player)){
             event.setCancelled(true);
         }
-
-        if(entity instanceof Player player){
-            if(this.instance.getGameManager().getArena().getTeam(player) == null) {
-                event.setCancelled(true);
-            } else {
-                item.remove();
-                event.setCancelled(true);
-                int butin = item.getMetadata("butin").get(0).asInt();
-                this.instance.getGameManager().getArena().getPlayersButin().put(player, this.instance.getGameManager().getArena().getPlayersButin().getOrDefault(player, 0) + butin);
+        if(this.instance.getGameManager().getArena().getArena().isIn(item.getLocation())) {
+            item.setPersistent(false);
+            if (entity instanceof Player player) {
+                if (this.instance.getGameManager().getArena().getTeam(player) == null) {
+                    event.setCancelled(true);
+                } else {
+                    APlayer aPlayer = this.instance.getGameManager().getArena().getAPlayers().get(player);
+                    if (item.hasMetadata("butin")) {
+                        item.remove();
+                        event.setCancelled(true);
+                        int butin = item.getMetadata("butin").get(0).asInt();
+                        aPlayer.setButin(aPlayer.getButin() + butin);
+                    }
+                }
             }
         }
-
     }
 }

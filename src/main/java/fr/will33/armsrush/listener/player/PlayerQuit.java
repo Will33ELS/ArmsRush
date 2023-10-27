@@ -21,9 +21,11 @@ public class PlayerQuit implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        this.instance.getGameManager().getArena().getPlayerKit().remove(player);
+        this.instance.getGameManager().getArena().getAPlayers().remove(player);
         Optional.ofNullable(this.instance.getGameManager().getArena().getTeam(player)).ifPresent(team -> {
             this.instance.getGameManager().getArena().getPlayersInTeam(team).remove(player);
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(null);
             TeamGUI.refreshAllGUI();
         });
     }

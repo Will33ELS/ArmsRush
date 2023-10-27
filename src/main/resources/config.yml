@@ -8,6 +8,7 @@ arena:
 config:
   gameDurationInSeconds: 600
   maxPlayerInTeam: 2
+  portalOpenTime: 540
 prestart:
   teamItem:
     material: DIAMOND_SWORD
@@ -17,6 +18,11 @@ prestart:
     material: CHEST
     displayname: "&bSelect kit"
     lore: []
+scoreboard:
+  title: "&9ArmsRush"
+  portal: "&fPortail: &c{portal}"
+  playerInGame: "&fJoueur en vie: &c{players}"
+  butin: "&fButin: &c{butin}"
 butin:
   material: NETHER_STAR
   display: "&3{butin}"
@@ -116,6 +122,14 @@ messages:
     full: "&cCette équipe est complète."
     success: "&aVous avez rejoint l'équipe avec succès."
     noTeamAvailable: "&cAucune équipe n'est disponible."
+    white: "blanche"
+    gray: "grise"
+    red: "rouge"
+    orange: "orange"
+    yellow: "jaune"
+    green: "verte"
+    cyan: "cyan"
+    purple: "violette"
   kits:
     select: "&aVous avez sélectionné le kit &b{kit}"
   kill:
@@ -123,3 +137,9 @@ messages:
   lobby:
     startIn: "&6Lancement de la partie dans §b{seconds} secondes"
     start: "&aQue la partie commence !"
+  portal:
+    success: "&aVous avez &c{butin} butins &aet joué durant &c{time}"
+    open: "&aLe portail vient de s'ouvrir !"
+  top:
+    head: "&aTop 5:"
+    body: "{team_color} Equipe {team} &7: &e{butin}"
