@@ -27,7 +27,7 @@ public class ConfigurationCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(commandSender instanceof Player player && player.isOp()){
+        if(commandSender instanceof Player player && player.hasPermission("armsrush.admin")){
             FileConfiguration configuration = this.instance.getConfig();
             ConfigurationManager configurationManager = this.instance.getConfigurationManager();
             if(strings.length == 0){
