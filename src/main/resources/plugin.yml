@@ -9,5 +9,7 @@ commands:
     description: "Commande administrative"
   configuration:
     description: "Configurer l'arène"
+    aliases:
+      - config
   prestart:
     description: "Se préparer pour le début de la partie"

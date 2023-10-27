@@ -10,7 +10,7 @@ public class APlayer {
 
     private final Player player;
     private ArmsScoreboard armsScoreboard;
-    private Integer butin = 100;
+    private Integer butin = 0;
     private Kit kit;
 
     public APlayer(@NotNull Player player) {
