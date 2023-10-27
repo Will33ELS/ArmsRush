@@ -51,9 +51,6 @@ public class TeamGUI extends AbstractGUI {
 
     @Override
     public void onClick(Player player, ItemStack itemStack, String action, ClickType clickType) {
-        if(!this.instance.getGameManager().getArena().getAPlayers().containsKey(player)){
-            this.instance.getGameManager().getArena().getAPlayers().put(player, new APlayer(player));
-        }
         if("random".equals(action)){
             List<TeamEnum> available = new ArrayList<>();
             for(TeamEnum teamEnum : TeamEnum.values()){
@@ -64,6 +61,9 @@ public class TeamGUI extends AbstractGUI {
             if(available.isEmpty()){
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.team.noTeamAvailable")));
             } else {
+                if(!this.instance.getGameManager().getArena().getAPlayers().containsKey(player)){
+                    this.instance.getGameManager().getArena().getAPlayers().put(player, new APlayer(player));
+                }
                 TeamEnum playerTeam = this.instance.getGameManager().getArena().getTeam(player);
                 TeamEnum teamEnum = available.get(new Random().nextInt(available.size()));
                 Optional.ofNullable(playerTeam).ifPresent(t -> this.instance.getGameManager().getArena().getPlayersInTeam(t).remove(player));
@@ -77,6 +77,9 @@ public class TeamGUI extends AbstractGUI {
             if ((playerTeam != null && playerTeam != teamEnum) && this.instance.getGameManager().getArena().getPlayersInTeam(teamEnum).size() >= this.instance.getConfigurationManager().getMaxPlayerInTeam()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.team.full")));
             } else if (playerTeam != teamEnum) {
+                if(!this.instance.getGameManager().getArena().getAPlayers().containsKey(player)){
+                    this.instance.getGameManager().getArena().getAPlayers().put(player, new APlayer(player));
+                }
                 Optional.ofNullable(playerTeam).ifPresent(t -> this.instance.getGameManager().getArena().getPlayersInTeam(t).remove(player));
                 this.instance.getGameManager().getArena().getPlayersInTeam(teamEnum).add(player);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.team.success")));

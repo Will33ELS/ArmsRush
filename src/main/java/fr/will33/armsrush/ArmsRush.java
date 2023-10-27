@@ -27,9 +27,13 @@ public class ArmsRush extends JavaPlugin {
         if(!new File(this.getDataFolder(), "kits.yml").exists()) {
             this.saveResource("kits.yml", false);
         }
+        if(!new File(this.getDataFolder(), "mobs.yml").exists()) {
+            this.saveResource("mobs.yml", false);
+        }
         try {
             this.configurationManager.loadConfiguration(this.gameManager, this.getConfig());
             this.configurationManager.loadKits(this.gameManager, YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "kits.yml")));
+            this.configurationManager.loadMobs(this.gameManager, YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "mobs.yml")));
         } catch (ArmsRushConfigurationException e) {
             throw new RuntimeException(e);
         }

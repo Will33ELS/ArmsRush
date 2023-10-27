@@ -28,6 +28,7 @@ public class GameTask extends BukkitRunnable {
             this.cancel();
             this.instance.getGameManager().stopGame();
         } else {
+            this.instance.getGameManager().checkSpawnMobs(this.gameDurationRemaining);
             this.instance.getGameManager().getBossBar().setTitle(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("bossBar.display").replace("{timer}", TimerUtil.format(this.gameDurationRemaining))));
 
             for(Map.Entry<Player, APlayer> entry : this.instance.getGameManager().getArena().getAPlayers().entrySet()){

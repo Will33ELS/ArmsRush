@@ -3,10 +3,7 @@ package fr.will33.armsrush.manager;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.exception.ArmsRushGameException;
-import fr.will33.armsrush.model.APlayer;
-import fr.will33.armsrush.model.Arena;
-import fr.will33.armsrush.model.Kit;
-import fr.will33.armsrush.model.TeamEnum;
+import fr.will33.armsrush.model.*;
 import fr.will33.armsrush.task.ArmsScoreboard;
 import fr.will33.armsrush.task.GameTask;
 import fr.will33.armsrush.task.LobbyTask;
@@ -27,12 +24,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class GameManager {
 
     private Arena arena;
     private BossBar bossBar;
     private final List<Kit> kits = new ArrayList<>();
+    private final List<Mob> mobs = new ArrayList<>();
     private LobbyTask lobbyTask;
     private GameTask gameTask;
 
@@ -75,6 +74,7 @@ public class GameManager {
      */
     public void startLobby() throws ArmsRushGameException {
         if(this.getArena().getStatut() != Arena.Statut.LOBBY) return;
+        this.checkPlayerNoTeam();
         for(TeamEnum teamEnum : TeamEnum.values()){
             Random random = new Random();
             List<Player> players = this.getArena().getPlayersInTeam(teamEnum);
@@ -91,6 +91,8 @@ public class GameManager {
             pls.getInventory().clear();
             pls.getInventory().setArmorContents(null);
         });
+
+        this.mobs.forEach(mob -> this.getArena().getSpawnTime().put(mob, mob.spawnEverySeconds()));
     }
 
     /**
@@ -183,8 +185,61 @@ public class GameManager {
         }
         this.getArena().getArena().getWorld().getEntities().stream().filter(entity -> entity instanceof Item item && this.getArena().getArena().isIn(item.getLocation())).forEach(Entity::remove);
 
+        this.getArena().getSpawnTime().clear();
         this.getArena().getAPlayers().clear();
         this.getArena().setStatut(Arena.Statut.LOBBY);
+    }
+
+    /**
+     * Check and spawn mobs if necessary
+     * @param gameTimeInSecond Elapsed game time in second
+     */
+    public void checkSpawnMobs(int gameTimeInSecond){
+        for(Map.Entry<Mob, Integer> entry : this.getArena().getSpawnTime().entrySet()){
+            Mob mob = entry.getKey();
+            if(mob.startSpawnAt() <= gameTimeInSecond){
+                int time = this.getArena().getSpawnTime().getOrDefault(mob, mob.spawnEverySeconds());
+                if(time == 0){
+                    Random random = new Random();
+                    int nbr = random.nextInt(mob.minNumberPerWave(), mob.maxNumberPerWave());
+                    for(int i = 0; i <= nbr; i ++){
+                        Location location = this.getArena().getMobSpawn().get(random.nextInt(this.getArena().getMobSpawn().size()));
+                        mob.spawn(location);
+                    }
+                    this.getArena().getSpawnTime().put(mob, mob.spawnEverySeconds());
+                } else {
+                    this.getArena().getSpawnTime().put(mob, time-1);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set a team for all players who have not selected a team
+     */
+    private void checkPlayerNoTeam(){
+        for(Player player : Bukkit.getOnlinePlayers()){
+            if(player.getInventory().contains(ArmsRush.getInstance().getConfigurationManager().getTeamItemStack()) && !this.getArena().getPlayersInGame().contains(player)){
+                List<TeamEnum> available = new ArrayList<>();
+                for(TeamEnum teamEnum : TeamEnum.values()){
+                    if(this.getArena().getPlayersInTeam(teamEnum).size() < ArmsRush.getInstance().getConfigurationManager().getMaxPlayerInTeam()){
+                        available.add(teamEnum);
+                    }
+                }
+                if(available.isEmpty()){
+                    player.getInventory().clear();
+                    player.getInventory().setArmorContents(null);
+                } else {
+                    if(!this.getArena().getAPlayers().containsKey(player)){
+                        this.getArena().getAPlayers().put(player, new APlayer(player));
+                    }
+                    TeamEnum playerTeam = this.getArena().getTeam(player);
+                    TeamEnum teamEnum = available.get(new Random().nextInt(available.size()));
+                    Optional.ofNullable(playerTeam).ifPresent(t -> this.getArena().getPlayersInTeam(t).remove(player));
+                    this.getArena().getPlayersInTeam(teamEnum).add(player);
+                }
+            }
+        }
     }
 
     /**
@@ -209,5 +264,13 @@ public class GameManager {
      */
     public @Nullable BossBar getBossBar() {
         return bossBar;
+    }
+
+    /**
+     * Retrieve mobs list
+     * @return
+     */
+    public List<Mob> getMobs() {
+        return mobs;
     }
 }

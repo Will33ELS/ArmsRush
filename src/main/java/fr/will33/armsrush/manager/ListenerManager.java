@@ -3,6 +3,7 @@ package fr.will33.armsrush.manager;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.listener.entity.EntityDamageByEntity;
+import fr.will33.armsrush.listener.entity.EntityDeath;
 import fr.will33.armsrush.listener.entity.EntityPickupItem;
 import fr.will33.armsrush.listener.inventory.InventoryClick;
 import fr.will33.armsrush.listener.player.*;
@@ -20,6 +21,7 @@ public class ListenerManager {
 
         //ENTITY
         pluginManager.registerEvents(new EntityDamageByEntity(instance), instance);
+        pluginManager.registerEvents(new EntityDeath(instance), instance);
         pluginManager.registerEvents(new EntityPickupItem(instance), instance);
 
         //INVENTORY

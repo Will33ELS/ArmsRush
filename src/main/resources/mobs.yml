@@ -1,0 +1,21 @@
+mobs:
+  mob1:
+    displayname: "&eMob 1"
+    entityType: ZOMBIE
+    startSpawnAtInSecond: 0
+    spawnEverySeconds: 10
+    minNumberPerWave: 1
+    maxNumberPerWave: 3
+    helmet:
+    chestplate:
+    leggings:
+    boots:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3578
+      type: LEATHER_BOOTS
+    itemInHand:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3578
+        type: WOODEN_SWORD
+    health: 2
+    butin: 1

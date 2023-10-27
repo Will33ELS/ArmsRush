@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -97,6 +98,72 @@ public class ConfigurationManager {
                 }
                 Kit kit = new Kit(kitName, display, content, helmet, chestplate, leggings, boots);
                 gameManager.getKits().add(kit);
+            }
+        }
+    }
+
+    /**
+     * Load mobs from mobs.yml
+     * @param gameManager Instance of the gamemanager
+     * @param configuration Instance of the configuration
+     */
+    public void loadMobs(@NotNull GameManager gameManager, @NotNull FileConfiguration configuration) throws ArmsRushConfigurationException{
+        Preconditions.checkNotNull(gameManager);
+        Preconditions.checkNotNull(configuration);
+        if(configuration.getConfigurationSection("mobs") != null){
+            for(String key : configuration.getConfigurationSection("mobs").getKeys(false)){
+                String path = "mobs." + key;
+                EntityType entityType;
+                try{
+                    entityType = EntityType.valueOf(configuration.getString(path + ".entityType"));
+                } catch (IllegalArgumentException ex){
+                    throw new ArmsRushConfigurationException("This entitytype don't exist (" +  configuration.getString(path + ".entityType") + ". Please check https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html");
+                }
+                ItemStack helmet = configuration.getItemStack(path + ".helmet", null);
+                ItemStack chestplate = configuration.getItemStack(path + ".chestplate", null);
+                ItemStack leggings = configuration.getItemStack(path + ".leggings", null);
+                ItemStack boots = configuration.getItemStack(path + ".boots", null);
+                ItemStack itemInHand = configuration.getItemStack(path + ".itemInHand", null);
+                int startSpawnAt = configuration.getInt(path + ".startSpawnAtInSecond");
+                int spawnEverySeconds = configuration.getInt(path + ".spawnEverySeconds");
+                int minNumberPerWave = configuration.getInt(path + ".minNumberPerWave");
+                int maxNumberPerWave = configuration.getInt(path + ".maxNumberPerWave");
+                int health = configuration.getInt(path + ".health");
+                int butin = configuration.getInt(path + ".butin");
+                if(startSpawnAt < 0){
+                    throw new ArmsRushConfigurationException("The value " + path + ".startSpawnAtInSecond cannot be less than 0");
+                }
+                if(spawnEverySeconds < 0){
+                    throw new ArmsRushConfigurationException("The value " + path + ".spawnEverySeconds cannot be less than 0");
+                }
+                if(minNumberPerWave < 1){
+                    throw new ArmsRushConfigurationException("The value " + path + ".minNumberPerWave cannot be less than 1");
+                }
+                if(maxNumberPerWave < minNumberPerWave){
+                    throw new ArmsRushConfigurationException("The value " + path + ".maxNumberPerWave cannot be less than " + path + ".minNumberPerWave");
+                }
+                if(health < 1){
+                    throw new ArmsRushConfigurationException("The value " + path + ".health cannot be less than 1");
+                }
+                if(butin < 0){
+                    throw new ArmsRushConfigurationException("The value " + path + ".butin cannot be less than 0");
+                }
+                Mob mob = new Mob(
+                        entityType,
+                        configuration.getString(path + ".displayname"),
+                        startSpawnAt,
+                        spawnEverySeconds,
+                        minNumberPerWave,
+                        maxNumberPerWave,
+                        helmet,
+                        chestplate,
+                        leggings,
+                        boots,
+                        itemInHand,
+                        health,
+                        butin
+                        );
+                gameManager.getMobs().add(mob);
             }
         }
     }

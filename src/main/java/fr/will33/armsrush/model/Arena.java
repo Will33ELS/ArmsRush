@@ -19,6 +19,7 @@ public class Arena {
     private final Map<TeamEnum, List<Location>> spawnLocations = new HashMap<>();
     private final Map<TeamEnum, List<Player>> players = new HashMap<>();
     private final Map<Player, APlayer> aPlayers = new HashMap<>();
+    private final Map<Mob, Integer> spawnTime = new HashMap<>();
     private Statut statut = Statut.LOBBY;
     private boolean portalIsOpen = false;
 
@@ -143,6 +144,14 @@ public class Arena {
      */
     public void setPortalIsOpen(boolean portalIsOpen) {
         this.portalIsOpen = portalIsOpen;
+    }
+
+    /**
+     * Retrieve the time remaining before a monster's next spawn
+     * @return
+     */
+    public Map<Mob, Integer> getSpawnTime() {
+        return spawnTime;
     }
 
     /**

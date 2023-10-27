@@ -3,11 +3,20 @@ package fr.will33.armsrush.task;
 import com.google.common.base.Preconditions;
 import fr.will33.armsrush.ArmsRush;
 import fr.will33.armsrush.exception.ArmsRushGameException;
+import fr.will33.armsrush.model.APlayer;
 import fr.will33.armsrush.model.Arena;
+import fr.will33.armsrush.model.TeamEnum;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class LobbyTask extends BukkitRunnable {
 
@@ -29,7 +38,6 @@ public class LobbyTask extends BukkitRunnable {
             this.cancel();
             this.instance.getGameManager().getArena().getPlayersInGame().forEach(pls ->
                     pls.spigot().sendMessage(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', this.instance.getConfig().getString("messages.lobby.start")))));
-
            this.instance.getGameManager().startGame();
         } else {
             this.instance.getGameManager().getArena().getPlayersInGame().forEach(pls ->
