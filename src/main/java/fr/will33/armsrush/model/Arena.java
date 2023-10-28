@@ -20,7 +20,7 @@ public class Arena {
     private final Map<TeamEnum, List<Player>> players = new HashMap<>();
     private final Map<Player, APlayer> aPlayers = new HashMap<>();
     private final Map<Mob, Integer> spawnTime = new HashMap<>();
-    private Statut statut = Statut.LOBBY;
+    private Statut statut = Statut.CLOSED;
     private boolean portalIsOpen = false;
 
     public Arena(@NotNull Cuboid arena, @NotNull Cuboid portal) {

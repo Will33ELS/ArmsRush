@@ -187,7 +187,7 @@ public class GameManager {
 
         this.getArena().getSpawnTime().clear();
         this.getArena().getAPlayers().clear();
-        this.getArena().setStatut(Arena.Statut.LOBBY);
+        this.getArena().setStatut(Arena.Statut.CLOSED);
     }
 
     /**
