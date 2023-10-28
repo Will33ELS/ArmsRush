@@ -171,6 +171,6 @@ public class Arena {
     }
 
     public static enum Statut {
-        LOBBY, LAUNCH, INGAME;
+        CLOSED, LOBBY, LAUNCH, INGAME;
     }
 }

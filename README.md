@@ -10,10 +10,11 @@ de la fin de la partie.
 - **/armsrush delkit** Pour supprimer un kit
 - **/armsrush start** Pour lancer la partie
 - **/armsrush stop** Pour arrêter la partie
-- **/prestart** Pour entrer dans la partie
+- **/prestart** Pour ouvrir la partie
+- **/join** Pour se préparer à jouer
 
 ## Permissions:
-- **armsrush.admin** Exécuter les commandes */config* et */armsrush*
+- **armsrush.admin** Exécuter les commandes */config*, */armsrush*, */prestart*
 
 ## Technique:
 - Java **17**

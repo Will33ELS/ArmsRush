@@ -11,5 +11,7 @@ commands:
     description: "Configurer l'arène"
     aliases:
       - config
-  prestart:
+  join:
     description: "Se préparer pour le début de la partie"
+  prestart:
+    description: "Ouvrir la partie"

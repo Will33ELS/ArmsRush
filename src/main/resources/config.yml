@@ -96,6 +96,7 @@ messages:
     worldError: "Les deux positions ne se situent pas dans le même monde."
   preStart:
     inProgress: "&cLa partie est déjà en cours."
+    open: "&aLa partie est ouverte."
     go: "&aVous pouvez désormais choisir votre équipe ainsi que votre kit."
   start:
     inProgress: "&cLa partie est déjà en cours."

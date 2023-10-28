@@ -12,15 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public class PreStartCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(commandSender instanceof Player player){
+        if(commandSender instanceof Player player && player.hasPermission("armsrush.admin")){
             ArmsRush instance = ArmsRush.getInstance();
-            if(instance.getGameManager().getArena().getStatut() != Arena.Statut.LOBBY){
+            if(instance.getGameManager().getArena().getStatut() != Arena.Statut.CLOSED){
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.preStart.inProgress")));
             } else {
-                player.getInventory().clear();
-                player.getInventory().setArmorContents(null);
-                player.getInventory().addItem(instance.getConfigurationManager().getTeamItemStack(), instance.getConfigurationManager().getKitsItemStack());
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.preStart.go")));
+                instance.getGameManager().getArena().setStatut(Arena.Statut.LOBBY);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.preStart.open")));
             }
         }
         return false;

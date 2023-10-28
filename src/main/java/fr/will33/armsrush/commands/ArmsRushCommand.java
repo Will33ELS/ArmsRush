@@ -84,7 +84,7 @@ public class ArmsRushCommand implements CommandExecutor {
                         }
                     }
                 } else if(strings[0].equalsIgnoreCase("stop")){
-                    if(this.instance.getGameManager().getArena().getStatut() == Arena.Statut.LOBBY) {
+                    if(this.instance.getGameManager().getArena().getStatut() == Arena.Statut.LOBBY || this.instance.getGameManager().getArena().getStatut() == Arena.Statut.CLOSED) {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', instance.getConfig().getString("messages.stop.noInProgress")));
                     } else {
                         this.instance.getGameManager().stopGame();
